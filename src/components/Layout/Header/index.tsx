@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export const Header: React.FC = (): JSX.Element => {
   const navigation = useNavigate();
+
   return (
     <AppBar color="transparent" elevation={0} position="static">
       <Container maxWidth="lg">

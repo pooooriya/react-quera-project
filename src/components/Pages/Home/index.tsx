@@ -1,13 +1,21 @@
 import { Grid, Skeleton } from "@mui/material";
-import { GetMealResponse, GetSliderResponse } from "../../../@types/api.types";
+import {
+  Food,
+  GetMealResponse,
+  GetSliderResponse
+} from "../../../@types/api.types";
 import { API_URL } from "../../../constants/apiUrl";
 import { useAxios } from "../../../hook/useAxios";
 import { Slider } from "../../Basic/Slider";
 import { Card } from "../../Basic/Card";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Checkout from "../../Basic/Checkout";
+import { useContext } from "react";
+import { AppContext } from "../../../context/store";
 interface HomePageProps {}
 const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
+  const navigate = useNavigate();
+  const { basket, setBasket } = useContext(AppContext);
   const { data: sliderData, isLoading: sliderLoading } = useAxios<
     null,
     GetSliderResponse[],
@@ -24,6 +32,32 @@ const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
     url: API_URL.GetMeals
   });
 
+  const handleAddToBasket = (arg: Food) => {
+    // 1. age nabuud bayd be list ezafe beshe
+    // 2. age ezafe shud byd be count esh ezafe beshe
+    const alreadyExist = basket.find((x) => x.id == arg.id); // undefiend
+    if (alreadyExist) {
+      alreadyExist.Count += 1;
+      const basketWithOutElement = basket.filter((x) => x.id != arg.id);
+      setBasket([...basketWithOutElement, alreadyExist]);
+    } else {
+      setBasket([...basket, { ...arg, Count: 1 }]);
+    }
+  };
+
+  const handleRemoveFromBasket = (id: number) => {
+    const alreadyExist = basket.find((x) => x.id == id);
+    if (alreadyExist) {
+      const basketWithOutElement = basket.filter((x) => x.id != id);
+      if (alreadyExist?.Count > 1) {
+        alreadyExist.Count -= 1;
+        setBasket([...basketWithOutElement, alreadyExist]);
+      } else {
+        setBasket(basketWithOutElement);
+      }
+    }
+  };
+
   if (sliderLoading || mealLoading) {
     return <Skeleton animation="wave" height="50vh" />;
   }
@@ -37,9 +71,14 @@ const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
               item.sub?.map((sub) =>
                 sub.food.map((food) => (
                   <Grid item xs={12} md={6} key={food.id}>
-                    <Link to={`items/${food.id}`}>
-                      <Card title={food.title} price={food.price.toString()} />
-                    </Link>
+                    <Card
+                      image={food.img.replace("#SIZEOFIMAGE#", "560x350")}
+                      title={food.title}
+                      price={food.price.toString()}
+                      onClick={() => navigate(`items/${food.id}`)}
+                      onAddClick={() => handleAddToBasket(food)}
+                      onRemoveClick={() => handleRemoveFromBasket(food.id)}
+                    />
                   </Grid>
                 ))
               )
