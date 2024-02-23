@@ -10,16 +10,19 @@ import { Slider } from "../../Basic/Slider";
 import { Card } from "../../Basic/Card";
 import { useNavigate } from "react-router-dom";
 import Checkout from "../../Basic/Checkout";
-import { useContext } from "react";
-import { AppContext } from "../../../context/store";
-import { BasketTypes } from "../../../context/reducers/basket";
+import {
+  AddToBasket,
+  RemoveFromBasket
+} from "../../../redux/features/basket/basket.slice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 interface HomePageProps {}
 const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
   const navigate = useNavigate();
-  const {
-    state: { basket },
-    dispatch
-  } = useContext(AppContext);
+
+  const dispatch = useDispatch();
+  const basket = useSelector<RootState>((state) => state.basket) as any[];
+
   const { data: sliderData, isLoading: sliderLoading } = useAxios<
     null,
     GetSliderResponse[],
@@ -63,10 +66,10 @@ const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
     // } else {
     //   setBasket([...basket, { ...arg, Count: 1 }]);
     // }
-    dispatch({
-      type: BasketTypes.AddToBasket,
-      payload: arg
-    });
+
+    console.log(arg);
+
+    dispatch(AddToBasket(arg));
   };
 
   const handleRemoveFromBasket = (id: number) => {
@@ -86,11 +89,7 @@ const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
     //     setBasket(basketWithOutElement);
     //   }
     // }
-
-    dispatch({
-      type: BasketTypes.RemoveFromBasket,
-      payload: id
-    });
+    dispatch(RemoveFromBasket(id));
   };
 
   if (sliderLoading || mealLoading) {

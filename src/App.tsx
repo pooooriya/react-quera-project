@@ -8,11 +8,12 @@ import { cacheRtl } from "./styles/cache";
 import { GlobalStyled } from "./styles/global";
 import TermsPage from "./components/Pages/Terms";
 import DetailPage from "./components/Pages/Detail";
-import { AppProvider } from "./context/store";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 export const App: React.FC = (): JSX.Element => {
   return (
-    <AppProvider>
+    <Provider store={store}>
       <CacheProvider value={cacheRtl}>
         <ThemeProvider theme={theme}>
           <GlobalStyles styles={GlobalStyled} />
@@ -28,6 +29,6 @@ export const App: React.FC = (): JSX.Element => {
           <CssBaseline />
         </ThemeProvider>
       </CacheProvider>
-    </AppProvider>
+    </Provider>
   );
 };

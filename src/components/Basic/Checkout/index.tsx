@@ -2,19 +2,23 @@ import { Button, IconButton, Stack, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { useContext } from "react";
-import { AppContext } from "../../../context/store";
 import { Food } from "../../../@types/api.types";
-import { BasketTypes } from "../../../context/reducers/basket";
-
+import { useSelector, useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../../../redux/store";
+import {
+  AddToBasket,
+  RemoveAllBasket,
+  RemoveFromBasket
+} from "../../../redux/features/basket/basket.slice";
 interface CheckoutProps {}
 const Checkout: React.FC<CheckoutProps> = (): JSX.Element => {
-  const { state, dispatch } = useContext(AppContext);
+  // const { state, dispatch } = useContext(AppContext);
+
+  const basket = useSelector<RootState>((state) => state.basket) as any[];
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleRemoveBasket = () => {
-    dispatch({
-      type: BasketTypes.RemoveAllBasket
-    });
+    dispatch(RemoveAllBasket());
   };
 
   const handleAddToBasket = (arg: Food) => {
@@ -47,10 +51,7 @@ const Checkout: React.FC<CheckoutProps> = (): JSX.Element => {
     // }
 
     // ravash 3.
-    dispatch({
-      type: BasketTypes.AddToBasket,
-      payload: arg
-    });
+    dispatch(AddToBasket(arg));
   };
 
   const handleRemoveFromBasket = (id: number) => {
@@ -70,11 +71,7 @@ const Checkout: React.FC<CheckoutProps> = (): JSX.Element => {
     //     setBasket(basketWithOutElement);
     //   }
     // }
-
-    dispatch({
-      type: BasketTypes.RemoveFromBasket,
-      payload: id
-    });
+    dispatch(RemoveFromBasket(id));
   };
   return (
     <Stack border="2px solid #e7e7e7" borderRadius={5} p={2} spacing={4}>
@@ -86,7 +83,7 @@ const Checkout: React.FC<CheckoutProps> = (): JSX.Element => {
       >
         <Typography>
           سبد خرید (
-          {state.basket.reduce((accumlator, currentvalue) => {
+          {basket.reduce((accumlator, currentvalue) => {
             return currentvalue.Count + accumlator;
           }, 0)}
           )
@@ -96,7 +93,7 @@ const Checkout: React.FC<CheckoutProps> = (): JSX.Element => {
         </IconButton>
       </Stack>
       <Stack>
-        {state.basket?.map((item) => (
+        {basket?.map((item) => (
           <Stack flexDirection="row" justifyContent="space-between">
             <Stack>
               <Typography>{item.title}</Typography>
@@ -123,7 +120,7 @@ const Checkout: React.FC<CheckoutProps> = (): JSX.Element => {
       >
         <Typography>هزینه ی کل</Typography>
         <Typography>
-          {state.basket.reduce((accumlator, currentvalue) => {
+          {basket.reduce((accumlator, currentvalue) => {
             return currentvalue.Count * currentvalue.price + accumlator;
           }, 0)}
           تومان
