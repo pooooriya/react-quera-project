@@ -2,7 +2,7 @@ import { createContext } from "react";
 import { Food } from "../@types/api.types";
 
 type AppContextState = {
-  basket?: any[];
+  basket?: Food[];
   setBasket?: React.Dispatch<React.SetStateAction<Food[]>>;
 };
 

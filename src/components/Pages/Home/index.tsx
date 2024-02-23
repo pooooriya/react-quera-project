@@ -33,13 +33,30 @@ const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
   });
 
   const handleAddToBasket = (arg: Food) => {
+    // ravash 1:
     // 1. age nabuud bayd be list ezafe beshe
     // 2. age ezafe shud byd be count esh ezafe beshe
-    const alreadyExist = basket.find((x) => x.id == arg.id); // undefiend
+    // const alreadyExist = basket.find((x) => x.id == arg.id); // undefiend
+    // if (alreadyExist) {
+    //   // alreadyExist.Count += 1;
+    //   // const basketWithOutElement = basket.filter((x) => x.id != arg.id);
+    //   // // Bug
+    //   // setBasket([...basketWithOutElement, alreadyExist]);
+    // } else {
+    //   setBasket([...basket, { ...arg, Count: 1 }]);
+    // }
+
+    // ravash 2:
+    const alreadyExist = basket.find((x) => x.id == arg.id);
     if (alreadyExist) {
-      alreadyExist.Count += 1;
-      const basketWithOutElement = basket.filter((x) => x.id != arg.id);
-      setBasket([...basketWithOutElement, alreadyExist]);
+      const newBasket = basket.map((item) => {
+        // az ghabl dar basket vojood darad
+        if (item.id == arg.id) {
+          item.Count += 1;
+        }
+        return item;
+      });
+      setBasket(newBasket);
     } else {
       setBasket([...basket, { ...arg, Count: 1 }]);
     }
@@ -50,8 +67,14 @@ const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
     if (alreadyExist) {
       const basketWithOutElement = basket.filter((x) => x.id != id);
       if (alreadyExist?.Count > 1) {
-        alreadyExist.Count -= 1;
-        setBasket([...basketWithOutElement, alreadyExist]);
+        const newBasket = basket.map((item) => {
+          // az ghabl dar basket vojood darad
+          if (item.id == id) {
+            item.Count -= 1;
+          }
+          return item;
+        });
+        setBasket(newBasket);
       } else {
         setBasket(basketWithOutElement);
       }
@@ -72,6 +95,9 @@ const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
                 sub.food.map((food) => (
                   <Grid item xs={12} md={6} key={food.id}>
                     <Card
+                      showRemoveButton={
+                        !!basket.find((x) => x.id == food.id)?.Count
+                      }
                       image={food.img.replace("#SIZEOFIMAGE#", "560x350")}
                       title={food.title}
                       price={food.price.toString()}

@@ -8,6 +8,7 @@ interface CardProps {
   onAddClick?: () => void;
   onRemoveClick?: () => void;
   onClick?: () => void;
+  showRemoveButton: boolean;
 }
 export const Card: React.FC<CardProps> = ({
   title,
@@ -15,7 +16,8 @@ export const Card: React.FC<CardProps> = ({
   image,
   onAddClick,
   onRemoveClick,
-  onClick
+  onClick,
+  showRemoveButton
 }): JSX.Element => {
   return (
     <Stack
@@ -55,14 +57,16 @@ export const Card: React.FC<CardProps> = ({
             >
               <AddIcon />
             </IconButton>
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation();
-                onRemoveClick();
-              }}
-            >
-              <RemoveIcon />
-            </IconButton>
+            {showRemoveButton && (
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemoveClick();
+                }}
+              >
+                <RemoveIcon />
+              </IconButton>
+            )}
           </Stack>
         </Stack>
       </Stack>

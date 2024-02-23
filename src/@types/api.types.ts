@@ -33,6 +33,7 @@ export interface Sub {
 
 export interface Food {
   index: number;
+  Count?: number;
   id: number;
   img: string;
   archive: boolean;
