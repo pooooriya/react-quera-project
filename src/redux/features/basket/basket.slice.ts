@@ -3,38 +3,24 @@ export const BasketSlice = createSlice({
   name: "basket",
   initialState: [],
   reducers: {
-    AddToBasket: (currentState, action) => {
-      const state = current(currentState);
-      const copyState = [...state];
-      const alreadyExist = copyState.find((x) => x.id === action.payload.id);
+    AddToBasket: (state, action) => {
+      const alreadyExist = state.find((x) => x.id === action.payload.id);
       if (alreadyExist) {
-        state.forEach((item) => (item.Count += 1));
-        return copyState;
+        alreadyExist.Count += 1;
       } else {
-        copyState.push({ ...action.payload, Count: 1 });
+        state.push({ ...action.payload, Count: 1 });
       }
-      return copyState;
     },
-    RemoveFromBasket: (currentState, action) => {
-      const state = current(currentState);
+    RemoveFromBasket: (state, action) => {
       const alreadyExist = state.find((x) => x.id === action.payload);
       if (alreadyExist) {
-        const basketWithOutElement = state.filter(
-          (x) => x.id != action.payload
-        );
-        if (alreadyExist?.Count > 1) {
-          const newBasket = state.map((item) => {
-            // az ghabl dar basket vojood darad
-            if (item.id === action.payload) {
-              item.Count -= 1;
-            }
-            return item;
-          });
-          return newBasket;
+        console.log(alreadyExist.Count);
+        if (alreadyExist.Count > 1) {
+          alreadyExist.Count -= 1;
+        } else {
+          return state.filter((x) => x.id !== action.payload);
         }
-        return basketWithOutElement;
       }
-      return state;
     },
     RemoveAllBasket: () => {
       return [];
