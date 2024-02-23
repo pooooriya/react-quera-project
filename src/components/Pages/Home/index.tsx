@@ -12,10 +12,14 @@ import { useNavigate } from "react-router-dom";
 import Checkout from "../../Basic/Checkout";
 import { useContext } from "react";
 import { AppContext } from "../../../context/store";
+import { BasketTypes } from "../../../context/reducers/basket";
 interface HomePageProps {}
 const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
   const navigate = useNavigate();
-  const { basket, setBasket } = useContext(AppContext);
+  const {
+    state: { basket },
+    dispatch
+  } = useContext(AppContext);
   const { data: sliderData, isLoading: sliderLoading } = useAxios<
     null,
     GetSliderResponse[],
@@ -45,40 +49,48 @@ const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
     // } else {
     //   setBasket([...basket, { ...arg, Count: 1 }]);
     // }
-
     // ravash 2:
-    const alreadyExist = basket.find((x) => x.id == arg.id);
-    if (alreadyExist) {
-      const newBasket = basket.map((item) => {
-        // az ghabl dar basket vojood darad
-        if (item.id == arg.id) {
-          item.Count += 1;
-        }
-        return item;
-      });
-      setBasket(newBasket);
-    } else {
-      setBasket([...basket, { ...arg, Count: 1 }]);
-    }
+    // const alreadyExist = basket.find((x) => x.id == arg.id);
+    // if (alreadyExist) {
+    //   const newBasket = basket.map((item) => {
+    //     // az ghabl dar basket vojood darad
+    //     if (item.id == arg.id) {
+    //       item.Count += 1;
+    //     }
+    //     return item;
+    //   });
+    //   setBasket(newBasket);
+    // } else {
+    //   setBasket([...basket, { ...arg, Count: 1 }]);
+    // }
+    dispatch({
+      type: BasketTypes.AddToBasket,
+      payload: arg
+    });
   };
 
   const handleRemoveFromBasket = (id: number) => {
-    const alreadyExist = basket.find((x) => x.id == id);
-    if (alreadyExist) {
-      const basketWithOutElement = basket.filter((x) => x.id != id);
-      if (alreadyExist?.Count > 1) {
-        const newBasket = basket.map((item) => {
-          // az ghabl dar basket vojood darad
-          if (item.id == id) {
-            item.Count -= 1;
-          }
-          return item;
-        });
-        setBasket(newBasket);
-      } else {
-        setBasket(basketWithOutElement);
-      }
-    }
+    // const alreadyExist = basket.find((x) => x.id == id);
+    // if (alreadyExist) {
+    //   const basketWithOutElement = basket.filter((x) => x.id != id);
+    //   if (alreadyExist?.Count > 1) {
+    //     const newBasket = basket.map((item) => {
+    //       // az ghabl dar basket vojood darad
+    //       if (item.id == id) {
+    //         item.Count -= 1;
+    //       }
+    //       return item;
+    //     });
+    //     setBasket(newBasket);
+    //   } else {
+    //     setBasket(basketWithOutElement);
+    //   }
+    // }
+
+    dispatch({
+      type: BasketTypes.RemoveFromBasket,
+      payload: id
+    });
   };
 
   if (sliderLoading || mealLoading) {

@@ -1,21 +1,47 @@
-import { createContext, useState } from "react";
-import { Food } from "../@types/api.types";
+// Flux
+// Context => Flux
 
-type AppContextState = {
-  basket?: Food[];
-  setBasket?: React.Dispatch<React.SetStateAction<Food[]>>;
+import { createContext, useReducer } from "react";
+import { BasketReducer } from "./reducers/basket";
+
+export type ActionType<T, K = any> = {
+  type: T;
+  payload?: K;
 };
 
-export const AppContext = createContext<AppContextState>({});
+export interface IntialStateTypes {
+  basket: any[];
+}
+
+export const intialState: IntialStateTypes = {
+  basket: []
+};
+
+export type AppContextState = {
+  state: IntialStateTypes;
+  dispatch: any;
+};
+
+export const AppContext = createContext<AppContextState>({
+  state: intialState,
+  dispatch: () => null
+});
 
 interface AppProviderState extends React.PropsWithChildren {}
+
+const combineReducer = (
+  { basket }: IntialStateTypes,
+  action: ActionType<any>
+) => ({
+  basket: BasketReducer(basket, action)
+});
 
 export const AppProvider: React.FC<AppProviderState> = ({
   children
 }): JSX.Element => {
-  const [basket, setBasket] = useState<Food[]>([]);
+  const [state, dispatch] = useReducer(combineReducer, intialState);
   return (
-    <AppContext.Provider value={{ basket, setBasket }}>
+    <AppContext.Provider value={{ state, dispatch }}>
       {children}
     </AppContext.Provider>
   );
