@@ -8,19 +8,11 @@ import { cacheRtl } from "./styles/cache";
 import { GlobalStyled } from "./styles/global";
 import TermsPage from "./components/Pages/Terms";
 import DetailPage from "./components/Pages/Detail";
-import { AppContext } from "./context/store";
-import { useState } from "react";
-import { Food } from "./@types/api.types";
+import { AppProvider } from "./context/store";
 
 export const App: React.FC = (): JSX.Element => {
-  const [basket, setBasket] = useState<Food[]>([]);
   return (
-    <AppContext.Provider
-      value={{
-        basket,
-        setBasket
-      }}
-    >
+    <AppProvider>
       <CacheProvider value={cacheRtl}>
         <ThemeProvider theme={theme}>
           <GlobalStyles styles={GlobalStyled} />
@@ -36,6 +28,6 @@ export const App: React.FC = (): JSX.Element => {
           <CssBaseline />
         </ThemeProvider>
       </CacheProvider>
-    </AppContext.Provider>
+    </AppProvider>
   );
 };
