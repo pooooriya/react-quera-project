@@ -1,13 +1,16 @@
 import { AppBar, Button, Container, Stack } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AuthenticationModal from "../../Authentication";
 
 export const Header: React.FC = (): JSX.Element => {
   const navigation = useNavigate();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <AppBar color="transparent" elevation={0} position="static">
       <Container maxWidth="lg">
+        <AuthenticationModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
         <Stack
           flexDirection="row"
           justifyContent="space-between"
@@ -28,7 +31,11 @@ export const Header: React.FC = (): JSX.Element => {
               <Button onClick={() => navigation("/terms")}>قوانین سایت</Button>
             </Stack>
             <Stack>
-              <Button color="primary" variant="contained">
+              <Button
+                onClick={() => setIsOpen(true)}
+                color="primary"
+                variant="contained"
+              >
                 ورود / عضویت
               </Button>
             </Stack>

@@ -16,6 +16,9 @@ import {
 } from "../../../redux/features/basket/basket.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { useGetFoodList } from "../../../services/Quries/useGetFoodList";
+import { useGetSliders } from "../../../services/Quries/useGetSliders";
+
 interface HomePageProps {}
 const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
   const navigate = useNavigate();
@@ -23,21 +26,9 @@ const HomePage: React.FC<HomePageProps> = (): JSX.Element => {
   const dispatch = useDispatch();
   const basket = useSelector<RootState>((state) => state.basket) as any[];
 
-  const { data: sliderData, isLoading: sliderLoading } = useAxios<
-    null,
-    GetSliderResponse[],
-    null
-  >({
-    url: API_URL.GetSliders
-  });
+  const { data: sliderData, isLoading: sliderLoading } = useGetSliders();
 
-  const { data: mealData, isLoading: mealLoading } = useAxios<
-    null,
-    GetMealResponse,
-    null
-  >({
-    url: API_URL.GetMeals
-  });
+  const { data: mealData, isLoading: mealLoading } = useGetFoodList();
 
   const handleAddToBasket = (arg: Food) => {
     // ravash 1:

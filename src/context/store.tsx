@@ -36,12 +36,20 @@ const combineReducer = (
   basket: BasketReducer(basket, action)
 });
 
+const ThunkMiddleware = (dispatch) => (action) => {
+  if (typeof action === "function") {
+    action(dispatch);
+  }
+
+  return dispatch(action);
+};
+
 export const AppProvider: React.FC<AppProviderState> = ({
   children
 }): JSX.Element => {
   const [state, dispatch] = useReducer(combineReducer, intialState);
   return (
-    <AppContext.Provider value={{ state, dispatch }}>
+    <AppContext.Provider value={{ state, dispatch: ThunkMiddleware(dispatch) }}>
       {children}
     </AppContext.Provider>
   );
